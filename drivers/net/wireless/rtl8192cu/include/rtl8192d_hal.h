@@ -211,6 +211,10 @@ typedef struct _RT_FIRMWARE{
 	FIRMWARE_SOURCE	eFWSource;
 	u8*			szFwBuffer;
 	u32			ulFwLength;
+#ifdef CONFIG_WOWLAN_92D
+	u8*			szWoWLANFwBuffer;
+	u32			ulWoWLANFwLength;
+#endif //CONFIG_WOWLAN_92D
 }RT_FIRMWARE, *PRT_FIRMWARE, RT_FIRMWARE_92D, *PRT_FIRMWARE_92D;
 
 //
@@ -655,7 +659,7 @@ struct hal_data_8192de
 #if 1
 	IQK_MATRIX_REGS_SETTING IQKMatrixRegSetting[IQK_Matrix_Settings_NUM];
 #else
-	//regc80ã€regc94ã€regc4cã€regc88ã€regc9cã€regc14ã€regca0ã€regc1cã€regc78
+	//regc80¡¢regc94¡¢regc4c¡¢regc88¡¢regc9c¡¢regc14¡¢regca0¡¢regc1c¡¢regc78
 	u4Byte				IQKMatrixReg[IQK_Matrix_REG_NUM];
 	IQK_MATRIX_REGS_SETTING			   IQKMatrixRegSetting[IQK_Matrix_Settings_NUM];	// 1->2G,24->5G 20M channel,21->5G 40M channel.
 #endif
@@ -854,7 +858,7 @@ struct hal_data_8192du
 #if 1
 	IQK_MATRIX_REGS_SETTING IQKMatrixRegSetting[IQK_Matrix_Settings_NUM];
 #else
-	//regc80ã€regc94ã€regc4cã€regc88ã€regc9cã€regc14ã€regca0ã€regc1cã€regc78
+	//regc80¡¢regc94¡¢regc4c¡¢regc88¡¢regc9c¡¢regc14¡¢regca0¡¢regc1c¡¢regc78
 	u4Byte				IQKMatrixReg[IQK_Matrix_REG_NUM];
 	IQK_MATRIX_REGS_SETTING			   IQKMatrixRegSetting[IQK_Matrix_Settings_NUM];	// 1->2G,24->5G 20M channel,21->5G 40M channel.
 #endif
@@ -924,7 +928,7 @@ typedef struct hal_data_8192du HAL_DATA_TYPE, *PHAL_DATA_TYPE;
 #define GET_HAL_DATA(__pAdapter)	((HAL_DATA_TYPE *)((__pAdapter)->HalData))
 #define GET_RF_TYPE(priv)	(GET_HAL_DATA(priv)->rf_type)
 
-int FirmwareDownload92D(IN PADAPTER Adapter);
+int FirmwareDownload92D(IN	PADAPTER Adapter,IN	BOOLEAN  bUsedWoWLANFw);
 VOID rtl8192d_FirmwareSelfReset(IN PADAPTER Adapter);
 void rtl8192d_ReadChipVersion(IN PADAPTER Adapter);
 VOID rtl8192d_ReadChannelPlan(PADAPTER Adapter, u8* PROMContent, BOOLEAN AutoLoadFail);

@@ -665,6 +665,7 @@ phy_ConfigMACWithHeaderFile(
 	ptrArray = Rtl819XMAC_Array;
 
 #ifdef CONFIG_IOL_MAC
+	if(Adapter->registrypriv.force_iol || !Adapter->dvobjpriv.ishighspeed)
 	{
 		struct xmit_frame	*xmit_frame;
 		if((xmit_frame=rtw_IOL_accquire_xmit_frame(Adapter)) == NULL)
@@ -676,11 +677,13 @@ phy_ConfigMACWithHeaderFile(
 
 		return rtw_IOL_exec_cmds_sync(Adapter, xmit_frame, 1000);
 	}
-#else
+	else
+#endif
+	{
 	for(i = 0 ;i < ArrayLength;i=i+2){ // Add by tynli for 2 column
 		rtw_write8(Adapter, ptrArray[i], (u8)ptrArray[i+1]);
 	}
-#endif
+	}
 	
 	return _SUCCESS;
 	
@@ -1033,6 +1036,7 @@ phy_ConfigBBWithHeaderFile(
 	if(ConfigType == BaseBand_Config_PHY_REG)
 	{
 		#ifdef CONFIG_IOL_BB_PHY_REG
+		if(Adapter->registrypriv.force_iol || !Adapter->dvobjpriv.ishighspeed)
 		{
 			struct xmit_frame	*xmit_frame;
 			u32 tmp_value;
@@ -1065,7 +1069,9 @@ phy_ConfigBBWithHeaderFile(
 		
 			ret = rtw_IOL_exec_cmds_sync(Adapter, xmit_frame, 1000);
 		}
-		#else
+		else
+		#endif
+		{
 		for(i=0;i<PHY_REGArrayLen;i=i+2)
 		{
 			if (Rtl819XPHY_REGArray_Table[i] == 0xfe){
@@ -1088,17 +1094,20 @@ phy_ConfigBBWithHeaderFile(
 
 			PHY_SetBBReg(Adapter, Rtl819XPHY_REGArray_Table[i], bMaskDWord, Rtl819XPHY_REGArray_Table[i+1]);
 
-			// Add 1us delay between BB/RF register setting.			rtw_udelay_os(1);
+				// Add 1us delay between BB/RF register setting.
+			rtw_udelay_os(1);
 
 			//RT_TRACE(COMP_INIT, DBG_TRACE, ("The Rtl819XPHY_REGArray_Table[0] is %lx Rtl819XPHY_REGArray[1] is %lx \n",Rtl819XPHY_REGArray_Table[i], Rtl819XPHY_REGArray_Table[i+1]));
 		}
-		#endif
+		}
+	
 		// for External PA
 		phy_ConfigBBExternalPA(Adapter);
 	}
 	else if(ConfigType == BaseBand_Config_AGC_TAB)
 	{
 		#ifdef CONFIG_IOL_BB_AGC_TAB
+		if(Adapter->registrypriv.force_iol || !Adapter->dvobjpriv.ishighspeed)
 		{
 			struct xmit_frame	*xmit_frame;
 
@@ -1115,7 +1124,9 @@ phy_ConfigBBWithHeaderFile(
 		
 			ret = rtw_IOL_exec_cmds_sync(Adapter, xmit_frame, 1000);
 		}
-		#else
+		else
+		#endif
+		{
 		for(i=0;i<AGCTAB_ArrayLen;i=i+2)
 		{
 			PHY_SetBBReg(Adapter, Rtl819XAGCTAB_Array_Table[i], bMaskDWord, Rtl819XAGCTAB_Array_Table[i+1]);		
@@ -1125,7 +1136,7 @@ phy_ConfigBBWithHeaderFile(
 			
 			//RT_TRACE(COMP_INIT, DBG_TRACE, ("The Rtl819XAGCTAB_Array_Table[0] is %lx Rtl819XPHY_REGArray[1] is %lx \n",Rtl819XAGCTAB_Array_Table[i], Rtl819XAGCTAB_Array_Table[i+1]));
 		}
-		#endif
+		}
 	}
 
 exit:
@@ -2089,6 +2100,7 @@ rtl8192c_PHY_ConfigRFWithHeaderFile(
 	switch(eRFPath){
 		case RF90_PATH_A:
 			#ifdef CONFIG_IOL_RF_RF90_PATH_A
+			if(Adapter->registrypriv.force_iol || !Adapter->dvobjpriv.ishighspeed)
 			{
 				struct xmit_frame	*xmit_frame;
 				if((xmit_frame=rtw_IOL_accquire_xmit_frame(Adapter)) == NULL) {
@@ -2123,7 +2135,9 @@ rtl8192c_PHY_ConfigRFWithHeaderFile(
 				}	
 				rtStatus = rtw_IOL_exec_cmds_sync(Adapter, xmit_frame, 1000);
 			}
-			#else
+			else
+			#endif
+			{
 			for(i = 0;i<RadioA_ArrayLen; i=i+2)
 			{
 				if(Rtl819XRadioA_Array_Table[i] == 0xfe) {
@@ -2150,12 +2164,14 @@ rtl8192c_PHY_ConfigRFWithHeaderFile(
 					rtw_udelay_os(1);
 				}
 			}	
-			#endif
+			}
+
 			//Add for High Power PA
 			PHY_ConfigRFExternalPA(Adapter, eRFPath);
 			break;
 		case RF90_PATH_B:
 			#ifdef CONFIG_IOL_RF_RF90_PATH_B
+			if(Adapter->registrypriv.force_iol || !Adapter->dvobjpriv.ishighspeed)
 			{
 				struct xmit_frame	*xmit_frame;
 				if((xmit_frame=rtw_IOL_accquire_xmit_frame(Adapter)) == NULL) {
@@ -2190,7 +2206,9 @@ rtl8192c_PHY_ConfigRFWithHeaderFile(
 				}	
 				rtStatus = rtw_IOL_exec_cmds_sync(Adapter, xmit_frame, 1000);
 			}
-			#else
+			else
+			#endif
+			{
 			for(i = 0;i<RadioB_ArrayLen; i=i+2)
 			{
 				if(Rtl819XRadioB_Array_Table[i] == 0xfe)
@@ -2226,7 +2244,8 @@ rtl8192c_PHY_ConfigRFWithHeaderFile(
 					rtw_udelay_os(1);
 				}	
 			}
-			#endif
+			}
+
 			break;
 		case RF90_PATH_C:
 			break;
