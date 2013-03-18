@@ -35,8 +35,8 @@ EXPORT_SYMBOL(sunxi_script_base);
 void sunxi_script_init(const struct sunxi_script *base)
 {
 	sunxi_script_base = base;
-	pr_debug("base: 0x%p\n", base);
-	pr_debug("version: %u.%u.%u count: %u\n",
+	pr_info("base: 0x%p\n", base);
+	pr_info("version: %u.%u.%u count: %u\n",
 		base->version[0], base->version[1], base->version[2],
 		base->count);
 }
