@@ -68,6 +68,15 @@ config SUN4I_GPIO_UGLY
 	  To compile this driver as a module, choose M here: the
 	  module will be called sun4i-gpio.
 
+config SUN4I_AWUSB
+	tristate "USB driver for A10 based devices"
+	depends on ARCH_SUN4I
+	default m if ARCH_SUN4I
+	help
+	  This driver is used only for FEL mode by LiveSuit for linux.
+
+	  To compile this driver as a module, choose M here.
+
 config SUNXI_DBGREG
 	tristate "Sunxi platform register debug driver"
 	help
