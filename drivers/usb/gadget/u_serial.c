@@ -133,8 +133,8 @@ static unsigned	n_ports;
 #define GS_CLOSE_TIMEOUT		15		/* seconds */
 
 
-
-#ifdef VERBOSE_DEBUG
+/* could be included, and so redefined by f_fs.c */
+#if defined(VERBOSE_DEBUG) && !defined(pr_vdebug)
 #define pr_vdebug(fmt, arg...) \
 	pr_debug(fmt, ##arg)
 #else

@@ -3,6 +3,10 @@
 #
 ccflags-$(CONFIG_USB_GADGET_DEBUG) := -DDEBUG
 
+ifdef CONFIG_DEBUG_INFO
+CFLAGS_REMOVE_android.o = -g -fomit-frame-pointer -fvar-tracking
+endif
+
 obj-$(CONFIG_USB_GADGET)	+= udc-core.o
 obj-$(CONFIG_USB_DUMMY_HCD)	+= dummy_hcd.o
 obj-$(CONFIG_USB_NET2272)	+= net2272.o
